@@ -1,7 +1,7 @@
 require 'rake'
 require "github/markdown"
 require "slim"
-require "pdfkit"
+require "shrimp"
 
 task :default => ['show']
 
@@ -44,7 +44,8 @@ def add_divs (html)
 end
 
 def to_pdf (src, out)
-	PDFKit.new(File.new(src), 'lowquality' => true, 'margin-left' => '1.2cm', 'margin-right' => '1.2cm', 'margin-top' => '1.2cm', 'margin-bottom' => '1.2cm').to_file(out)
+	options = { :margin => "1cm", :format => "A4"}
+	Shrimp::Phantom.new(File.new(src), options).to_pdf(out)
 	puts "#{src} => #{out}"
 end
 

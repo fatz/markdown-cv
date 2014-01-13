@@ -1,10 +1,7 @@
 # Markdown CV
+This is my fork of https://github.com/bitlyfied/markdown-cv. So at first thanks to @bitlyfied for the great work!
 
-Markdown CV is an attempt to write CVs using Markdown syntax, versioned using Git, automatically built into PDFs.
-
-**Warning: I wrote this code just for my personal use. Feel free to use it, but don't expect it to be well tested or even near to a beta version.** 
-
-I wrote a blog post about why I wrote it: http://bitlyfied.com/2013/03/14/markdown-cv/
+I'd noticed some issues with wkhtmltopdf and css so I changed this to phantomjs and Schrimp. As well as some css styling.
 
 ## Install
 
@@ -12,14 +9,16 @@ I wrote a blog post about why I wrote it: http://bitlyfied.com/2013/03/14/markdo
 
 	bundle install
 
-### Install wkhtmltopdf
+### Install phantomjs
+I'm using [Shrimp](https://github.com/adeven/shrimp) to render the pdf from the html file. Shrimp is based on phantomjs. So use `npm install phantomjs` or `brew install phantomjs`. You don't know `brew` or `npm`? 
 
-I had issues with version 0.11, so I'd suggest to use 0.10.
-You can download it from here: http://wkhtmltopdf.googlecode.com/files/wkhtmltopdf-OSX-0.10.0_rc2-static.tar.bz2
-Then create a symlink into your /usr/local/bin so that PDFKit can access it.
+__Mac users__ please take a look at http://brew.sh/. To install brew to this:
+
+	ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+
+__All others__ please follow the instructions on http://nodejs.org/
 
 ## Build
-
 To generate PDF you just need to use rake:
 
 	rake build
@@ -42,7 +41,6 @@ To tweak the style of the CV you can change the _template/base.css_ file with yo
 
 
 ## Enriched Markdown
-
 Markdown CV is using Github-flavoured Markdown, and on top of that it's adding an extra feature.
 You can mark blocks of content with the following syntax:
 
@@ -57,37 +55,56 @@ The build process will replace **[myblock]** with **&lt;div class=&quot;myblock&
 You can use this functionality to create asides and content formatted in a special way.
 
 ## Page breaks
-
 Markdown has no knowledge of pages or page breaks. But you can use **page-break-** CSS to control them.
 
-You can tackle the issue in two different ways.
-
-- specifically request page breaks where needed (not recommended)
-- define places where you don't want a page break, and let the normal flow find the right spots
-
-For the first method, you could use custom tags in your markdown like this:
-
-	[page-break/]
-
-Then you just need to add some CSS like this:
-
-	div.page-break{
-		page-break-after:always;
-	}
-
-My preferred approach is to let the content flow naturally between pages, and only avoid page breaks where they shouldn't be.
-The CV provided as example uses this trick.
-
-	[block]
+Use `[pagebreak]` to manually do a new page.
 	
-	** Some content here
-		
-	[/block]
+	my text
+	
+	[pagebreak]
 
-Then this line of CSS ensure everything in the block will hang together:
+	my text
 
+Normally the breaks should be fine but I had noticed that sometimes phantomjs does a bad job on this. I'm trying to figure out what's going wrong there but currently if you're ran into this kind of problems try using your chrome print to pdf manually by opening the `build/your-name.html` file.
 
-	p, li, .block, .aside{
-		page-break-inside:avoid;
-	}
+# Examples
+Here are some examples of using special things of my version
 
+## Your Picture aside the introduction
+
+	Profile
+	-------
+
+	![picture](../img/john.png)
+	- **Name** John Doe
+	...
+
+## Professional experience
+The given CSS adds a nice coloured bottom border to the fourth heading. So you you can use this for your job title like this:
+
+	Professional Experience
+	-----------------------
+
+	### My current awesome company _since Aug. 2012_
+	#### Master of Awesomeness
+	_some, of, my, main, topics_
+	What I was doing here Lorem ipsum Consectetur in incididunt qui ut elit ea deserunt in aliquip. Lorem ipsum Adipisicing qui labore ea ad Duis est cupidatat esse quis do voluptate nulla cupidatat veniam reprehenderit enim consequat labore deserunt.
+
+	- list of projects 
+	- or
+	- other things i would like to 
+	- highlight here
+
+	### My last awesome company _May 2004 - Aug. 2012_
+	#### Principle of Awesomeness
+	_some, of, my, main, topics_
+	What I was doing here Lorem ipsum Consectetur in incididunt qui ut elit ea deserunt in aliquip. Lorem ipsum Adipisicing qui labore ea ad Duis est cupidatat esse quis do voluptate nulla cupidatat veniam reprehenderit enim consequat labore deserunt.
+
+## Block Quotes
+If you want to cite a reference just do a block quote like this:
+
+	> Block quote, maybe a reference quote. Lorem ipsum Consequat labore adipisicing Duis Excepteur id Excepteur voluptate aute proident laborum sit voluptate eiusmod in officia ad magna consectetur veniam est est Duis labore ullamco reprehenderit in cillum culpa mollit eiusmod labore Ut Ut sed. _(Big Boss - CEO Himself)_
+
+## More examples? Just look into the Markdown doc
+- http://daringfireball.net/projects/markdown/syntax
+- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet

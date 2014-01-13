@@ -1,5 +1,10 @@
 .idea/
 *.iml
 build/
+img/*
+!img/.gitkeep
+src/*
+!src/example.md
+!src/name-surname-cv.md
 .DS_Store
 releases/
